@@ -1,0 +1,24 @@
+name: اختبار لغة الكيانات
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lexer-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: تحميل المستودع
+      uses: actions/checkout@v4
+
+    - name: إعداد Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: تشغيل Lexer
+      run: |
+        python compiler/lexer.py examples/test.كيان
