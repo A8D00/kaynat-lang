@@ -27,6 +27,8 @@ path = sys.argv[1]
 with open(path, "r", encoding="utf-8") as f:
     code = f.read()
 
+tokens = []
+
 for match in re.finditer(MASTER_REGEX, code):
     kind = match.lastgroup
     value = match.group()
@@ -34,7 +36,11 @@ for match in re.finditer(MASTER_REGEX, code):
     if kind == "SKIP":
         continue
     elif kind == "MISMATCH":
-        print(f"رمز غير معروف: {value}")
-        sys.exit(1)
+        raise RuntimeError(f"رمز غير معروف: {value}")
     else:
-        print((kind, value))
+        tokens.append((kind, value))
+
+for t in tokens:
+    print(t)
+
+print("تم التحليل بنجاح")
