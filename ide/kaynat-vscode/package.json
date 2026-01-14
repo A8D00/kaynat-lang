@@ -32,3 +32,6 @@
     ]
   }
 }
+"main": "./extension.js",
+"activationEvents": ["onCommand:kaynat.run"]
+
