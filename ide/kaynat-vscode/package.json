@@ -1,0 +1,28 @@
+{
+  "name": "kaynat-lang",
+  "displayName": "لغة الكيانات",
+  "description": "دعم لغة الكيانات العربية",
+  "version": "0.0.1",
+  "publisher": "kaynat",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "kaynat",
+        "aliases": ["الكيانات", "kaynat"],
+        "extensions": [".كيان"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "kaynat",
+        "scopeName": "source.kaynat",
+        "path": "./syntaxes/kaynat.tmLanguage.json"
+      }
+    ]
+  }
+}
