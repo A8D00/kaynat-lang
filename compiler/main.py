@@ -6,6 +6,10 @@ from parser import parse
 from ir import IRBuilder
 from codegen import CodeGenerator
 
+from assembler import assemble
+from linker import link
+from target_x86_64 import generate_return
+
 def compile_source(source_code):
     tokens = tokenize(source_code)
     ast = parse(tokens)
@@ -31,5 +35,13 @@ if __name__ == "__main__":
     with open(filename, "r", encoding="utf-8") as f:
         source = f.read()
 
-    assembly = compile_source(source)
-    print(assembly)
+    # توليد Assembly حقيقي
+asm = generate_return(5)
+
+# تحويل Assembly إلى Object file
+obj = assemble(asm)
+
+# ربطه لإنتاج ملف تنفيذي (0 و 1)
+binary = link(obj)
+
+print("تم إنشاء ملف تنفيذي:", binary)
