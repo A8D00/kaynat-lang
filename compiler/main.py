@@ -8,7 +8,7 @@ from codegen import CodeGenerator
 
 from assembler import assemble
 from linker import link
-from target_x86_64 import generate_return
+from target import get_target
 
 def compile_source(source_code):
     tokens = tokenize(source_code)
@@ -18,7 +18,8 @@ def compile_source(source_code):
     ir = ir_builder.build(ast)
 
     codegen = CodeGenerator()
-    asm = codegen.generate(ir)
+    generate_exit = get_target()
+asm = generate_exit(5)
 
     return asm
 
