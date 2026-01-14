@@ -1,0 +1,17 @@
+{
+  "scopeName": "source.kaynat",
+  "patterns": [
+    {
+      "name": "keyword.control.kaynat",
+      "match": "\\b(كيان|إذا|وإلا|بينما|ارجع|دع)\\b"
+    },
+    {
+      "name": "constant.numeric.kaynat",
+      "match": "\\b[0-9]+([٫،][0-9]+)?\\b"
+    },
+    {
+      "name": "string.quoted.kaynat",
+      "match": "«[^»]*»"
+    }
+  ]
+}
