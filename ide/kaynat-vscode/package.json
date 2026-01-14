@@ -9,6 +9,12 @@
   },
   "categories": ["Programming Languages"],
   "contributes": {
+    "commands": [
+  {
+    "command": "kaynat.run",
+    "title": "تشغيل ملف كيان"
+  }
+    ]
     "languages": [
       {
         "id": "kaynat",
