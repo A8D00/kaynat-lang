@@ -1,80 +1,50 @@
-# lexer.py
-# Lexer أولي للغة الكيانات
-
+# compiler/lexer.py
 import sys
+import re
 
-KEYWORDS = {
-    "دالة",
-    "أرجع",
-    "إذا",
-    "وإلا",
-    "طالما"
-}
+# -------- تعريف أنواع الـ Tokens --------
+TOKEN_SPEC = [
+    ("KEYWORD",   r"\b(دالة|أرجع|عدد|اطبع)\b"),
+    ("NUMBER",    r"\d+(?:,\d+)?"),
+    ("IDENT",     r"[ء-ي_][ء-ي0-9_]*"),
+    ("LPAREN",    r"\("),
+    ("RPAREN",    r"\)"),
+    ("LBRACE",    r"\{"),
+    ("RBRACE",    r"\}"),
+    ("NEWLINE",   r"\n"),
+    ("SKIP",      r"[ \t]+"),
+    ("MISMATCH",  r"."),
+]
 
-class Token:
-    def __init__(self, kind, value):
-        self.kind = kind
-        self.value = value
+MASTER_REGEX = "|".join(
+    f"(?P<{name}>{pattern})" for name, pattern in TOKEN_SPEC
+)
 
-    def __repr__(self):
-        return f"{self.kind}({self.value})"
+# -------- قراءة الملف --------
+if len(sys.argv) < 2:
+    print("خطأ: لم يتم تمرير ملف")
+    sys.exit(1)
 
-def tokenize(source):
-    tokens = []
-    i = 0
+path = sys.argv[1]
 
-    while i < len(source):
-        ch = source[i]
+with open(path, "r", encoding="utf-8") as f:
+    code = f.read()
 
-        # تجاهل المسافات
-        if ch.isspace():
-            i += 1
-            continue
+# -------- التحليل --------
+tokens = []
 
-        # أرقام
-        if ch.isdigit():
-            num = ch
-            i += 1
-            while i < len(source) and (source[i].isdigit() or source[i] == "٫"):
-                num += source[i]
-                i += 1
-            tokens.append(Token("NUMBER", num))
-            continue
+for match in re.finditer(MASTER_REGEX, code):
+    kind = match.lastgroup
+    value = match.group()
 
-        # نص
-        if ch == '"':
-            i += 1
-            text = ""
-            while i < len(source) and source[i] != '"':
-                text += source[i]
-                i += 1
-            i += 1
-            tokens.append(Token("STRING", text))
-            continue
+    if kind in ("SKIP", "NEWLINE"):
+        continue
+    elif kind == "MISMATCH":
+        print(f"رمز غير معروف: {value}")
+        sys.exit(1)
+    else:
+        tokens.append((kind, value))
 
-        # معرفات / كلمات محجوزة (عربي)
-        if ch.isalpha():
-            ident = ch
-            i += 1
-            while i < len(source) and source[i].isalpha():
-                ident += source[i]
-                i += 1
-
-            if ident in KEYWORDS:
-                tokens.append(Token("KEYWORD", ident))
-            else:
-                tokens.append(Token("IDENT", ident))
-            continue
-
-        # رموز
-        tokens.append(Token("SYMBOL", ch))
-        i += 1
-
-    return tokens
-
-if __name__ == "__main__":
-    with open(sys.argv[1], "r", encoding="utf-8") as f:
-        src = f.read()
-
-    for t in tokenize(src):
-        print(t)
+# -------- الطباعة --------
+for t in tokens:
+    print(t)
