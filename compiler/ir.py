@@ -7,26 +7,25 @@
 class IRInstruction:
     pass
 
-
 class IRFunction(IRInstruction):
     def __init__(self, name):
         self.name = name
         self.body = []
 
+from compiler.isa import ISA
 
 class IRReturn(IRInstruction):
     def __init__(self, value):
-        self.opcode = 0b11111111   # opcode الخاص بـ RETURN
-        self.value = format(value, "08b")  # operand = 8 bits
+        self.opcode = ISA["RETURN"]
+        self.operand = format(value, "08b")
 
 class IRLoadConst(IRInstruction):
     def __init__(self, value):
-        self.value = value
-
-
+        self.opcode = ISA["LOAD_CONST"]
+        self.operand = format(value, "08b")
+        
 class IRAdd(IRInstruction):
     pass
-
 
 class IRSub(IRInstruction):
     pass
@@ -34,7 +33,6 @@ class IRSub(IRInstruction):
 class IRStore(IRInstruction):
     def __init__(self, address):
         self.address = address
-
 
 class IRLoadVar(IRInstruction):
     def __init__(self, address):
