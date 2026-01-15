@@ -1,6 +1,8 @@
 # compiler/main.py
 # نقطة الدخول لمترجم لغة الكيانات
 
+from compiler.codegen import generate_machine_code
+
 from lexer import tokenize
 from parser import parse
 from ir import IRBuilder
@@ -19,6 +21,11 @@ def compile_source(source_code):
     ir_builder = IRBuilder()
     ir = ir_builder.build(ast)
 
+machine_code = generate_machine_code(ir)
+
+print("=== Machine Code (0/1 فقط) ===")
+print(machine_code)
+    
     codegen = CodeGenerator()
     generate_exit = get_target()
 asm = generate_exit(5)
