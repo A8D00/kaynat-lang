@@ -58,4 +58,11 @@ if __name__ == "__main__":
 
     source_file = sys.argv[1]
     compile_file(source_file)
+    from compiler.vm import VirtualMachine
+
+# بعد توليد binary_code
+vm = VirtualMachine(binary_code)
+result = vm.run()
+
+print("ناتج التنفيذ:", result)
     
