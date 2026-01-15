@@ -16,9 +16,8 @@ class IRFunction(IRInstruction):
 
 class IRReturn(IRInstruction):
     def __init__(self, value):
-        self.opcode = 0xFF      # opcode افتراضي للخروج
-        self.value = value     # القيمة المرجعة
-
+        self.opcode = 0b11111111   # opcode الخاص بـ RETURN
+        self.value = format(value, "08b")  # operand = 8 bits
 
 # ---------- محوّل AST → IR ----------
 
