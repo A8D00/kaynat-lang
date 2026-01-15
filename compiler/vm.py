@@ -14,8 +14,29 @@ class VirtualMachine:
         return instr
 
     def decode_execute(self, instr):
-        opcode = instr[:8]
-        operand = instr[8:]
+    opcode = instr[:8]
+    operand = instr[8:]
+
+    if opcode == "00000001":  # LOAD_CONST
+        value = int(operand, 2)
+        self.stack.append(value)
+
+    elif opcode == "00000010":  # ADD
+        b = self.stack.pop()
+        a = self.stack.pop()
+        self.stack.append(a + b)
+
+    elif opcode == "00000011":  # SUB
+        b = self.stack.pop()
+        a = self.stack.pop()
+        self.stack.append(a - b)
+
+    elif opcode == "11111111":  # RETURN
+        value = int(operand, 2)
+        return value
+
+    else:
+        raise RuntimeError(f"Opcode غير معروف: {opcode}")
 
         if opcode == "11111111":  # RETURN
             value = int(operand, 2)
