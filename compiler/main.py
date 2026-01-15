@@ -13,56 +13,29 @@ from linker import link
 from target import get_target
 
 import sys
+from compiler.lexer import tokenize
+from compiler.parser import Parser
+from compiler.ir import IRBuilder
+from compiler.codegen import generate_machine_code
 
-def compile_source(source_code):
+def main():
+    if len(sys.argv) < 2:
+        print("استخدم: python main.py <file.كيان>")
+        return
+
+    with open(sys.argv[1], "r", encoding="utf-8") as f:
+        source_code = f.read()
+
     tokens = tokenize(source_code)
-    ast = parse(tokens)
+    parser = Parser(tokens)
+    ast = parser.parse()
 
-    ir_builder = IRBuilder()
-    ir = ir_builder.build(ast)
+    ir = IRBuilder().build(ast)
+    machine_code = generate_machine_code(ir)
 
-machine_code = generate_machine_code(ir)
+    print("Machine Code:")
+    print(machine_code)
 
-print("=== Machine Code (0/1 فقط) ===")
-print(machine_code)
-    
-    codegen = CodeGenerator()
-    generate_exit = get_target()
-asm = generate_exit(5)
-
-    return asm
-
-    if len(sys.argv) < 2:
-        print("الاستخدام: kaynat <file.كيان>")
-        sys.exit(1)
-
-    filename = sys.argv[1]
-
-    with open(filename, "r", encoding="utf-8") as f:
-        source = f.read()
-
-    # توليد Assembly حقيقي
-asm = generate_return(5)
-
-# تحويل Assembly إلى Object file
-obj = assemble(asm)
-
-# ربطه لإنتاج ملف تنفيذي (0 و 1)
-binary = link(obj)
-
-print("تم إنشاء ملف تنفيذي:", binary)
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("يرجى تمرير ملف .كيان")
-        sys.exit(1)
-
-    source_file = sys.argv[1]
-    compile_file(source_file)
-    from compiler.vm import VirtualMachine
-
-# بعد توليد binary_code
-vm = VirtualMachine(binary_code)
-result = vm.run()
-
-print("ناتج التنفيذ:", result)
+    main()
     
