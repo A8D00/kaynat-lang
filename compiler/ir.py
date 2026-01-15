@@ -19,6 +19,18 @@ class IRReturn(IRInstruction):
         self.opcode = 0b11111111   # opcode الخاص بـ RETURN
         self.value = format(value, "08b")  # operand = 8 bits
 
+class IRLoadConst(IRInstruction):
+    def __init__(self, value):
+        self.value = value
+
+
+class IRAdd(IRInstruction):
+    pass
+
+
+class IRSub(IRInstruction):
+    pass
+
 # ---------- محوّل AST → IR ----------
 
 class IRBuilder:
