@@ -88,7 +88,9 @@ class IRLoadVar(IRInstruction):
     for stmt in fn.body:
 
         if stmt.__class__.__name__ == "Assignment":
-            addr = self.get_var_address(stmt.name)
+    addr = self.get_var_address(stmt.name)
+    self.build_expr(stmt.value, ir_fn)
+    ir_fn.body.append(IRStore(addr))
 
             if stmt.value.__class__.__name__ == "Number":
                 ir_fn.body.append(IRLoadConst(stmt.value.value))
@@ -105,7 +107,9 @@ class IRLoadVar(IRInstruction):
                 ir_fn.body.append(IRLoadVar(addr))
                 ir_fn.body.append(IRReturn(0))
 
-    return ir_fn
+    elif stmt.__class__.__name__ == "Return":
+    self.build_expr(stmt.value, ir_fn)
+    ir_fn.body.append(IRReturn(0))
 
         # حاليًا ندعم: دالة تحتوي على return واحد فقط
         ret_value = fn.body.value.value
