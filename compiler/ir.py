@@ -16,7 +16,8 @@ class IRFunction(IRInstruction):
 
 class IRReturn(IRInstruction):
     def __init__(self, value):
-        self.value = value
+        self.opcode = 0xFF      # opcode افتراضي للخروج
+        self.value = value     # القيمة المرجعة
 
 
 # ---------- محوّل AST → IR ----------
@@ -39,6 +40,10 @@ class IRBuilder:
 
         # حاليًا ندعم: دالة تحتوي على return واحد فقط
         ret_value = fn.body.value.value
-        ir_fn.body.append(IRReturn(ret_value))
+
+# نحول القيمة إلى تمثيل ثنائي بسيط (8-bit)
+binary_value = format(ret_value, "08b")
+
+ir_fn.body.append(IRReturn(binary_value))
 
         return ir_fn
