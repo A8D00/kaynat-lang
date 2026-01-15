@@ -42,7 +42,17 @@ class IRLoadVar(IRInstruction):
 
 # ---------- محوّل AST → IR ----------
 
-class IRBuilder:
+    class IRBuilder:
+    def __init__(self):
+        self.variables = {}      # اسم المتغير → عنوان
+        self.next_address = 0    # العنوان التالي
+   
+    def get_var_address(self, name):
+    if name not in self.variables:
+        self.variables[name] = self.next_address
+        self.next_address += 1
+    return self.variables[name]
+    
     def build(self, program):
         """
         program: عقدة Program من الـ AST
@@ -53,10 +63,22 @@ class IRBuilder:
         return functions
 
     def build_function(self, fn):
-        """
-        fn: عقدة Function من الـ AST
-        """
-        ir_fn = IRFunction(fn.name)
+    ir_fn = IRFunction(fn.name)
+
+    stmt = fn.body  # نفترض أن الجسم تعليمة واحدة حاليًا
+
+    # حالة: return رقم
+    if stmt.value.__class__.__name__ == "Number":
+        ir_fn.body.append(IRLoadConst(stmt.value.value))
+        ir_fn.body.append(IRReturn(stmt.value.value))
+
+    # حالة: return متغير
+    elif stmt.value.__class__.__name__ == "Identifier":
+        addr = self.get_var_address(stmt.value.name)
+        ir_fn.body.append(IRLoadVar(addr))
+        ir_fn.body.append(IRReturn(0))  # القيمة على الستاك
+
+    return ir_fn
 
         # حاليًا ندعم: دالة تحتوي على return واحد فقط
         ret_value = fn.body.value.value
