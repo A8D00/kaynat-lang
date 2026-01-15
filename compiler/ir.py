@@ -43,6 +43,26 @@ class IRLoadVar(IRInstruction):
 # ---------- محوّل AST → IR ----------
 
     class IRBuilder:
+        def build_expr(self, expr, ir_fn):
+    # رقم ثابت
+    if expr.__class__.__name__ == "Number":
+        ir_fn.body.append(IRLoadConst(expr.value))
+
+    # متغير
+    elif expr.__class__.__name__ == "Identifier":
+        addr = self.get_var_address(expr.name)
+        ir_fn.body.append(IRLoadVar(addr))
+
+    # عملية حسابية
+    elif expr.__class__.__name__ == "BinaryOp":
+        self.build_expr(expr.left, ir_fn)
+        self.build_expr(expr.right, ir_fn)
+
+        if expr.op == "+":
+            ir_fn.body.append(IRAdd())
+        elif expr.op == "-":
+            ir_fn.body.append(IRSub())
+   
     def __init__(self):
         self.variables = {}      # اسم المتغير → عنوان
         self.next_address = 0    # العنوان التالي
