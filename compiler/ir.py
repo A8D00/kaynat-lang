@@ -31,6 +31,15 @@ class IRAdd(IRInstruction):
 class IRSub(IRInstruction):
     pass
 
+class IRStore(IRInstruction):
+    def __init__(self, address):
+        self.address = address
+
+
+class IRLoadVar(IRInstruction):
+    def __init__(self, address):
+        self.address = address
+
 # ---------- محوّل AST → IR ----------
 
 class IRBuilder:
