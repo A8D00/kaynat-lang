@@ -62,21 +62,28 @@ class IRLoadVar(IRInstruction):
             functions.append(self.build_function(fn))
         return functions
 
-    def build_function(self, fn):
+ def build_function(self, fn):
     ir_fn = IRFunction(fn.name)
 
-    stmt = fn.body  # نفترض أن الجسم تعليمة واحدة حاليًا
+    for stmt in fn.body:
 
-    # حالة: return رقم
-    if stmt.value.__class__.__name__ == "Number":
-        ir_fn.body.append(IRLoadConst(stmt.value.value))
-        ir_fn.body.append(IRReturn(stmt.value.value))
+        if stmt.__class__.__name__ == "Assignment":
+            addr = self.get_var_address(stmt.name)
 
-    # حالة: return متغير
-    elif stmt.value.__class__.__name__ == "Identifier":
-        addr = self.get_var_address(stmt.value.name)
-        ir_fn.body.append(IRLoadVar(addr))
-        ir_fn.body.append(IRReturn(0))  # القيمة على الستاك
+            if stmt.value.__class__.__name__ == "Number":
+                ir_fn.body.append(IRLoadConst(stmt.value.value))
+                ir_fn.body.append(IRStore(addr))
+
+        elif stmt.__class__.__name__ == "Return":
+
+            if stmt.value.__class__.__name__ == "Number":
+                ir_fn.body.append(IRLoadConst(stmt.value.value))
+                ir_fn.body.append(IRReturn(stmt.value.value))
+
+            elif stmt.value.__class__.__name__ == "Identifier":
+                addr = self.get_var_address(stmt.value.name)
+                ir_fn.body.append(IRLoadVar(addr))
+                ir_fn.body.append(IRReturn(0))
 
     return ir_fn
 
